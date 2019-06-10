@@ -30,8 +30,6 @@ class MainActivity : AppCompatActivity() {
     private var output: String? = null
     private var mediaRecorder: MediaRecorder? = null
     private var state: Boolean = false
-    private var recordingStopped: Boolean = false
-    private var maxSoundLevel: Int? = 0
     private lateinit var mHandler: Handler
     private lateinit var mRunnable:Runnable
     private var n = 0
@@ -108,10 +106,10 @@ class MainActivity : AppCompatActivity() {
             } else {
                 File(output).delete()
             }
+            logFile.appendText(getLogText())
             threshold = getThreshold()
             delay = getDelay()
             stopRecording()
-            logFile.appendText(getLogText())
             startRecording()
             mediaRecorder?.maxAmplitude
             maxSoundLevels = arrayOf(0,0,0,0,0,0,0,0,0,0)
@@ -128,11 +126,13 @@ class MainActivity : AppCompatActivity() {
 
     fun checkSendSMS(): Boolean {
         var thresholdExceededCounter = 0
-        loudEventsCounter++
         maxSoundLevels.forEach { level -> if (level > threshold) {
             thresholdExceededCounter++
         } }
-        if (thresholdExceededCounter >= numberOfLoudCyclesToTriggerNotifiction) { return true }
+        if (thresholdExceededCounter >= numberOfLoudCyclesToTriggerNotifiction) {
+            loudEventsCounter++
+            return true 
+        }
         return false
     }
 
