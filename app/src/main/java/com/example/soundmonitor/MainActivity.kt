@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         } }
         if (thresholdExceededCounter >= numberOfLoudCyclesToTriggerNotifiction) {
             loudEventsCounter++
-            return true 
+            return true
         }
         return false
     }
@@ -160,9 +160,9 @@ class MainActivity : AppCompatActivity() {
         var multiLineText = "Time:$current\n" +
                             "Thold:$threshold\n" +
                             "Delay:$delay\n" +
-                            "#Notifies:$loudEventsCounter\n" +
+                            "Notifies:$loudEventsCounter\n" +
                             "n:$n\n\n" +
-                            "Volumes\n:"
+                            "Volumes:\n"
         maxSoundLevels.forEach{ maxSound -> multiLineText += "$maxSound\n"}
 
         return multiLineText
