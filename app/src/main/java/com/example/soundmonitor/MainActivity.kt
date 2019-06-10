@@ -114,6 +114,7 @@ class MainActivity : AppCompatActivity() {
             logFile.appendText(getSingleLineText())
             startRecording()
             mediaRecorder?.maxAmplitude
+            maxSoundLevels = arrayOf(0,0,0,0,0,0,0,0,0,0)
         }
     }
 
@@ -154,7 +155,7 @@ class MainActivity : AppCompatActivity() {
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val current = sdf.format(Date())
         return  "Time:$current\n" +
-                maxSoundLevels.map{ maxSound -> "Level:$maxSound\n"} +
+                maxSoundLevels.forEach{ maxSound -> "Level:$maxSound\n"} +
                 "Threshold:$threshold\n" +
                 "Delay:$delay\n" +
                 "Number of notifcations:$loudEventsCounter\n" +
