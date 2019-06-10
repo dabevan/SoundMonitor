@@ -128,21 +128,16 @@ class MainActivity : AppCompatActivity() {
 
     fun checkSendSMS(): Boolean {
         var thresholdExceededCounter = 0
+        loudEventsCounter++
         maxSoundLevels.forEach { level -> if (level > threshold) {
             thresholdExceededCounter++
-            //logFile.appendText("thresholdExceededCounter:$thresholdExceededCounter\n")
         } }
-        if (thresholdExceededCounter >= numberOfLoudCyclesToTriggerNotifiction) {
-            //logFile.appendText("numberOfLoudCyclesToTriggerNotifiction exceeded - Returning TRUE\n")
-            return true
-        }
-        //logFile.appendText("numberOfLoudCyclesToTriggerNotifiction NOT exceeded - Returning FALSE\n")
+        if (thresholdExceededCounter >= numberOfLoudCyclesToTriggerNotifiction) { return true }
         return false
     }
 
     fun sendSMS() {
         val smsManager = SmsManager.getDefault() as SmsManager
-        //logFile.appendText("Loud noise detected!\n\n" + getMultiLineText() + "\n")
         smsManager.sendTextMessage("07903681502", null, "ALERT!\n\n" + getMultiLineText(), null, null)
     }
 
@@ -163,11 +158,13 @@ class MainActivity : AppCompatActivity() {
         val sdf = SimpleDateFormat("HH:mm:ss")
         val current = sdf.format(Date())
         var multiLineText = "Time:$current\n"
+                            "Thold:$threshold\n" +
+                            "Delay:$delay\n" +
+                            "#Notifies:$loudEventsCounter\n" +
+                            "n:$n\n\n" +
+                            "Volumes\n:"
         maxSoundLevels.forEach{ maxSound -> multiLineText += "$maxSound\n"}
-        multiLineText += "Thold:$threshold\n" +
-                         "Delay:$delay\n" +
-                         "#Notifies:$loudEventsCounter\n" +
-                         "n:$n"
+
         return multiLineText
     }
 
