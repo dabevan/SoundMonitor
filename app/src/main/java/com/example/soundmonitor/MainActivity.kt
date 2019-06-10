@@ -152,19 +152,22 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun getDropboxFolder() :String {
-        return Environment.getExternalStorageDirectory().absolutePath + "/Dropbox/OnePlus5T"
+        return getRootFolder() + "/Dropbox/OnePlus5T"
     }
 
+    private fun getRootFolder() :String {
+        return Environment.getExternalStorageDirectory().absolutePath
+    }
 
     private fun getTempFileName() :String {
-        return getDropboxFolder() + "/recording_$n.mp3"
+        return getRootFolder() + "/recording_$n.mp3"
     }
 
 
     private fun getPermFileName() :String {
-        val sdf = SimpleDateFormat("dd-MM-yyyy_HH-mm-ss")
+        val sdf = SimpleDateFormat("MM-dd_HH-mm-ss")
         val current = sdf.format(Date())
-        return getDropboxFolder() + "/recording_${current}_($n).mp3"
+        return getDropboxFolder() + "/${current}_($n).mp3"
     }
 
 
