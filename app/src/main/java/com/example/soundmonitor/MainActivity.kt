@@ -128,8 +128,15 @@ class MainActivity : AppCompatActivity() {
 
     fun checkSendSMS(): Boolean {
         var thresholdExceededCounter = 0
-        maxSoundLevels.forEach { level -> if (level > threshold) {thresholdExceededCounter++ } }
-        if (thresholdExceededCounter >= numberOfLoudCyclesToTriggerNotifiction) { return true }
+        maxSoundLevels.forEach { level -> if (level > threshold) {
+            thresholdExceededCounter++
+            logFile.appendText("thresholdExceededCounter:$thresholdExceededCounter\n")
+        } }
+        if (thresholdExceededCounter >= numberOfLoudCyclesToTriggerNotifiction) {
+            logFile.appendText("numberOfLoudCyclesToTriggerNotifiction exceeded - Returning TRUE")
+            return true
+        }
+        logFile.appendText("numberOfLoudCyclesToTriggerNotifiction NOT exceeded - Returning FALSE")
         return false
     }
 
