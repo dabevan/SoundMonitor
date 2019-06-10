@@ -154,12 +154,13 @@ class MainActivity : AppCompatActivity() {
     private fun getMultiLineText() :String {
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val current = sdf.format(Date())
-        return  "Time:$current\n" +
-                maxSoundLevels.forEach{ maxSound -> "Level:$maxSound\n"} +
-                "Threshold:$threshold\n" +
-                "Delay:$delay\n" +
-                "Number of notifcations:$loudEventsCounter\n" +
-                "n:$n"
+        var multiLineText = "Time:$current\n"
+        maxSoundLevels.forEach{ maxSound -> multiLineText += "Level:$maxSound\n"}
+        multiLineText += "Threshold:$threshold\n" +
+                         "Delay:$delay\n" +
+                         "Number of notifcations:$loudEventsCounter\n" +
+                         "n:$n"
+        return multiLineText
     }
 
     private fun getSingleLineText() :String {
@@ -167,7 +168,7 @@ class MainActivity : AppCompatActivity() {
         val current = sdf.format(Date())
         return "$current Levels:" +
                 maxSoundLevels.map{ maxSound -> "$maxSound "} +
-                "THold:$threshold Delay:$delay #Loud:$loudEventsCounter n:$n\n"
+                " THold:$threshold Delay:$delay #Loud:$loudEventsCounter n:$n\n"
     }
 
 
