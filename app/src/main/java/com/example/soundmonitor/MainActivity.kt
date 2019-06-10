@@ -130,19 +130,20 @@ class MainActivity : AppCompatActivity() {
         var thresholdExceededCounter = 0
         maxSoundLevels.forEach { level -> if (level > threshold) {
             thresholdExceededCounter++
-            logFile.appendText("thresholdExceededCounter:$thresholdExceededCounter\n")
+            //logFile.appendText("thresholdExceededCounter:$thresholdExceededCounter\n")
         } }
         if (thresholdExceededCounter >= numberOfLoudCyclesToTriggerNotifiction) {
-            logFile.appendText("numberOfLoudCyclesToTriggerNotifiction exceeded - Returning TRUE")
+            //logFile.appendText("numberOfLoudCyclesToTriggerNotifiction exceeded - Returning TRUE\n")
             return true
         }
-        logFile.appendText("numberOfLoudCyclesToTriggerNotifiction NOT exceeded - Returning FALSE")
+        //logFile.appendText("numberOfLoudCyclesToTriggerNotifiction NOT exceeded - Returning FALSE\n")
         return false
     }
 
     fun sendSMS() {
         val smsManager = SmsManager.getDefault() as SmsManager
-        smsManager.sendTextMessage("07903681502", null, "Loud noise detected!\n\n" + getMultiLineText(), null, null)
+        //logFile.appendText("Loud noise detected!\n\n" + getMultiLineText() + "\n")
+        smsManager.sendTextMessage("07903681502", null, "ALERT!\n\n" + getMultiLineText(), null, null)
     }
 
 
@@ -159,13 +160,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getMultiLineText() :String {
-        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+        val sdf = SimpleDateFormat("HH:mm:ss")
         val current = sdf.format(Date())
         var multiLineText = "Time:$current\n"
-        maxSoundLevels.forEach{ maxSound -> multiLineText += "Level:$maxSound\n"}
-        multiLineText += "Threshold:$threshold\n" +
+        maxSoundLevels.forEach{ maxSound -> multiLineText += "$maxSound\n"}
+        multiLineText += "Thold:$threshold\n" +
                          "Delay:$delay\n" +
-                         "Number of notifcations:$loudEventsCounter\n" +
+                         "#Notifies:$loudEventsCounter\n" +
                          "n:$n"
         return multiLineText
     }
