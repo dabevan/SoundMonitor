@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
 
     fun checkKeepFile(): Boolean {
         var thresholdExceededCounter = 0
-        maxSoundLevels.map { level -> if (level > threshold) {thresholdExceededCounter++ } }
+        maxSoundLevels.forEach { level -> if (level > threshold) {thresholdExceededCounter++ } }
         if (thresholdExceededCounter >= numberOfLoudCyclesToTriggerKeepFile) { return true }
         return false
     }
@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity() {
 
     fun checkSendSMS(): Boolean {
         var thresholdExceededCounter = 0
-        maxSoundLevels.map { level -> if (level > threshold) {thresholdExceededCounter++ } }
+        maxSoundLevels.forEach { level -> if (level > threshold) {thresholdExceededCounter++ } }
         if (thresholdExceededCounter >= numberOfLoudCyclesToTriggerNotifiction) { return true }
         return false
     }
