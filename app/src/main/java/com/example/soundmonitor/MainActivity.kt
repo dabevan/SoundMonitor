@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
             threshold = getThreshold()
             delay = getDelay()
             stopRecording()
-            logFile.appendText(getSingleLineText())
+            logFile.appendText(getLogText())
             startRecording()
             mediaRecorder?.maxAmplitude
             maxSoundLevels = arrayOf(0,0,0,0,0,0,0,0,0,0)
@@ -168,12 +168,12 @@ class MainActivity : AppCompatActivity() {
         return multiLineText
     }
 
-    private fun getSingleLineText() :String {
+    private fun getLogText() :String {
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val current = sdf.format(Date())
-        return "$current Levels:" +
-                maxSoundLevels.map{ maxSound -> "$maxSound "} +
-                " THold:$threshold Delay:$delay #Loud:$loudEventsCounter n:$n\n"
+        return "$current THold:$threshold Delay:$delay #Loud:$loudEventsCounter n:$n\n" +
+                maxSoundLevels.map{ maxSound -> "$maxSound "} + "\n\n"
+
     }
 
 
