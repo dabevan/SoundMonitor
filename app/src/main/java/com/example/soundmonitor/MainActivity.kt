@@ -20,11 +20,13 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var delay :Long = 60000
-    private var delayLong :Long = 60000 * 15
-    private var delayVeryLong :Long = 60000 * 60
+    private var delay :Long = 6000
     private var loudEventsCounter = 0
     private var threshold = 20000
+    private var cycleCounter = 0
+    private var numberOfLoudCyclesToTriggerNotifiction = 5
+    private var numberOfLoudCyclesToTriggerKeepFile = 1
+    private var maxSoundLevels = arrayOf(0,0,0,0,0,0,0,0,0,0)
     private var output: String? = null
     private var mediaRecorder: MediaRecorder? = null
     private var state: Boolean = false
@@ -95,22 +97,39 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("RestrictedApi", "SetTextI18n")
     @TargetApi(Build.VERSION_CODES.N)
     private fun monitor() {
-        maxSoundLevel = mediaRecorder?.maxAmplitude
-        threshold = getThreshold()
-        delay = getDelay()
-        stopRecording()
-
-        if (maxSoundLevel!! > threshold) {
-            loudEventsCounter++
-            sendSMS()
-            File(output).renameTo(File(getPermFileName()))
-        } else {
-            File(output).delete()
-        }
+        maxSoundLevels[cycleCounter++] = mediaRecorder!!.maxAmplitude
         textview_sound_level.text = getMultiLineText()
-        logFile.appendText(getSingleLineText())
-        startRecording()
-        mediaRecorder?.maxAmplitude
+
+        if(cycleCounter == maxSoundLevels.size) {
+            cycleCounter = 0
+            if (checkSendSMS()) { sendSMS() }
+            if (checkKeepFile()) {
+                File(output).renameTo(File(getPermFileName()))
+            } else {
+                File(output).delete()
+            }
+            threshold = getThreshold()
+            delay = getDelay()
+            stopRecording()
+            logFile.appendText(getSingleLineText())
+            startRecording()
+            mediaRecorder?.maxAmplitude
+        }
+    }
+
+    fun checkKeepFile(): Boolean {
+        var thresholdExceededCounter = 0
+        maxSoundLevels.map { level -> if (level > threshold) {thresholdExceededCounter++ } }
+        if (thresholdExceededCounter >= numberOfLoudCyclesToTriggerKeepFile) { return true }
+        return false
+    }
+
+
+    fun checkSendSMS(): Boolean {
+        var thresholdExceededCounter = 0
+        maxSoundLevels.map { level -> if (level > threshold) {thresholdExceededCounter++ } }
+        if (thresholdExceededCounter >= numberOfLoudCyclesToTriggerNotifiction) { return true }
+        return false
     }
 
     fun sendSMS() {
@@ -118,13 +137,6 @@ class MainActivity : AppCompatActivity() {
         smsManager.sendTextMessage("07903681502", null, "Loud noise detected!\n\n" + getMultiLineText(), null, null)
     }
 
-    @SuppressLint("RestrictedApi", "SetTextI18n")
-    @TargetApi(Build.VERSION_CODES.N)
-    private fun resumeRecording() {
-        Toast.makeText(this,"Resume!", Toast.LENGTH_SHORT).show()
-        mediaRecorder?.resume()
-        recordingStopped = false
-    }
 
     private fun stopRecording(){
         if(state){
@@ -141,13 +153,20 @@ class MainActivity : AppCompatActivity() {
     private fun getMultiLineText() :String {
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val current = sdf.format(Date())
-        return "Time:$current\nLevel:$maxSoundLevel\nThreshold:$threshold\nDelay:$delay\nNumber of loud events:$loudEventsCounter\nn:$n"
+        return  "Time:$current\n" +
+                maxSoundLevels.map{ maxSound -> "Level:$maxSound\n"} +
+                "Threshold:$threshold\n" +
+                "Delay:$delay\n" +
+                "Number of notifcations:$loudEventsCounter\n" +
+                "n:$n"
     }
 
     private fun getSingleLineText() :String {
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val current = sdf.format(Date())
-        return "$current Level:$maxSoundLevel THold:$threshold Delay:$delay #Loud:$loudEventsCounter n:$n\n"
+        return "$current Levels:" +
+                maxSoundLevels.map{ maxSound -> "$maxSound "} +
+                "THold:$threshold Delay:$delay #Loud:$loudEventsCounter n:$n\n"
     }
 
 
@@ -178,9 +197,6 @@ class MainActivity : AppCompatActivity() {
                 fileDelayValue = it.toLong()
             }
         }
-        if (fileDelayValue > 0) { return fileDelayValue }
-        if (loudEventsCounter > 10) { return delayLong }
-        if (loudEventsCounter > 20) { return delayVeryLong }
         return delay
     }
 
