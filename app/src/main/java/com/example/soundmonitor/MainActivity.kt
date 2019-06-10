@@ -157,7 +157,7 @@ class MainActivity : AppCompatActivity() {
     private fun getMultiLineText() :String {
         val sdf = SimpleDateFormat("HH:mm:ss")
         val current = sdf.format(Date())
-        var multiLineText = "Time:$current\n"
+        var multiLineText = "Time:$current\n" +
                             "Thold:$threshold\n" +
                             "Delay:$delay\n" +
                             "#Notifies:$loudEventsCounter\n" +
