@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     private var loudEventsCounter = 0
     private var threshold = 20000
     private var cycleCounter = 0
-    private var numberOfLoudCyclesToTriggerNotifiction = 5
+    private var numberOfLoudCyclesToTriggerNotifiction = 3
     private var numberOfLoudCyclesToTriggerKeepFile = 1
     private var maxSoundLevels = arrayOf(0,0,0,0,0,0,0,0,0,0)
     private var output: String? = null
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mHandler: Handler
     private lateinit var mRunnable:Runnable
     private var n = 0
-    private var logFile = File(Environment.getExternalStorageDirectory().absolutePath + "/Dropbox/OnePlus5T/log.txt")
+    private var logFile = File(getDropboxFolder() + "/log.txt")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 File(output).delete()
             }
-            logFile.appendText(getLogText())
+            log(getLogText())
             threshold = getThreshold()
             delay = getDelay()
             stopRecording()
@@ -114,6 +114,16 @@ class MainActivity : AppCompatActivity() {
             mediaRecorder?.maxAmplitude
             maxSoundLevels = arrayOf(0,0,0,0,0,0,0,0,0,0)
         }
+    }
+
+    fun log(logText :String) {
+        val sdf = SimpleDateFormat("MM-dd_HH-mm-ss")
+        val current = sdf.format(Date())
+        if(n > 360) {
+            logFile = File(getDropboxFolder() + "/log_$current.txt")
+            n=0
+        }
+        logFile.appendText(getLogText())
     }
 
     fun checkKeepFile(): Boolean {
