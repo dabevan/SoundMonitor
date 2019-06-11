@@ -208,13 +208,13 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun getDelay() :Long {
-        var fileDelayValue :Long = 0
+        var fileDelayValue :Long = delay
         File(getDropboxFolder() + "/delay.txt").forEachLine {
             if(it != "0") {
                 fileDelayValue = it.toLong()
             }
         }
-        return delay
+        return fileDelayValue
     }
 
     private fun getThreshold() :Int {
