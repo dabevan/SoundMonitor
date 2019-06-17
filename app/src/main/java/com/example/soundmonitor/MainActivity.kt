@@ -22,9 +22,9 @@ class MainActivity : AppCompatActivity() {
 
     private var delay :Long = 6000
     private var loudEventsCounter = 0
-    private var threshold = 20000
+    private var threshold = 9000
     private var cycleCounter = 0
-    private var numberOfLoudCyclesToTriggerNotifiction = 3
+    private var numberOfLoudCyclesToTriggerNotifiction = 8
     private var numberOfLoudCyclesToTriggerKeepFile = 1
     private var maxSoundLevels = arrayOf(0,0,0,0,0,0,0,0,0,0)
     private var output: String? = null
@@ -109,6 +109,8 @@ class MainActivity : AppCompatActivity() {
             log(getLogText())
             threshold = getThreshold()
             delay = getDelay()
+            numberOfLoudCyclesToTriggerNotifiction = getNumberOfLoudCyclesToTriggerNotifiction()
+            numberOfLoudCyclesToTriggerKeepFile = getNumberOfLoudCyclesToTriggerKeepFile()
             stopRecording()
             startRecording()
             mediaRecorder?.maxAmplitude
@@ -181,7 +183,7 @@ class MainActivity : AppCompatActivity() {
     private fun getLogText() :String {
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val current = sdf.format(Date())
-        return "$current THold:$threshold Delay:$delay #Loud:$loudEventsCounter n:$n\n" +
+        return "$current THold:$threshold Delay:$delay #ToTriggerNote:$numberOfLoudCyclesToTriggerNotifiction #ToKeepFile:$numberOfLoudCyclesToTriggerKeepFile #Notifications:$loudEventsCounter n:$n\n" +
                 maxSoundLevels.map{ maxSound -> "$maxSound "} + "\n\n"
 
     }
@@ -224,7 +226,28 @@ class MainActivity : AppCompatActivity() {
                 fileThresholdValue = it.toInt()
             }
         }
-        if (fileThresholdValue > 0) { return fileThresholdValue }
-        return 20000
+        return fileThresholdValue
+    }
+
+
+    private fun getNumberOfLoudCyclesToTriggerNotifiction() :Int {
+        var fileNumberOfLoudCyclesToTriggerNotifictionValue = 0
+        File(getDropboxFolder() + "/numberOfLoudCyclesToTriggerNotifiction.txt").forEachLine {
+            if(it != "0") {
+                fileNumberOfLoudCyclesToTriggerNotifictionValue = it.toInt()
+            }
+        }
+        return fileNumberOfLoudCyclesToTriggerNotifictionValue
+    }
+
+
+    private fun getNumberOfLoudCyclesToTriggerKeepFile() :Int {
+        var fileNumberOfLoudCyclesToTriggerKeepFileValue = 0
+        File(getDropboxFolder() + "/numberOfLoudCyclesToTriggerKeepFile.txt").forEachLine {
+            if(it != "0") {
+                fileNumberOfLoudCyclesToTriggerKeepFileValue = it.toInt()
+            }
+        }
+        return fileNumberOfLoudCyclesToTriggerKeepFileValue
     }
 }
